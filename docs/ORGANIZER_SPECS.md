@@ -1,104 +1,127 @@
 # Organizer specifications
 
-## Role and goals
+## Purpose
 
-Conference organizers configure the event, coordinate speakers and sessions, and make sure attendees can use the conference experience reliably. Their main goals are to:
+Organizers configure the event, coordinate speakers and attendees, and make sure the conference experience works during the event. They need useful planning information before the conference, operational visibility while it is running, and feedback afterward.
 
-- understand what attendees hope to learn;
-- prepare rooms and services for expected demand;
-- monitor live session tools during the event; and
-- learn what worked so the next event can improve.
+## Organizer goals
+
+- Configure the event schedule, sessions, speakers, rooms, participation options, and content policies.
+- Understand what attendees hope to learn and plan for likely demand.
+- Enable and monitor live transcription, translation, and audience participation.
+- Identify service problems quickly and choose a practical response.
+- Review aggregate feedback and engagement signals to improve future events.
 
 ## Before the conference
 
-### Event setup
+### Event and session setup
 
-Organizers create the conference, its schedule, rooms, tracks, and participation options. They can configure which sessions offer live transcription and translation, identify the languages offered, and set who can access session content.
+Organizers can create and update an event with its name, dates, location, time zone, registration link, schedule, rooms, tracks, speakers, and sessions. They can mark whether a session is in person, remote, or hybrid and specify the languages offered for live captions or translation.
 
-**Open decisions:** which event and schedule fields are required? Can attendees access sessions remotely, in person, or both? Who can publish or edit session details?
+For each session, organizers can configure:
 
-### Attendee interests and session planning
+- title, description, topic tags, speakers, track, room, and scheduled time;
+- expected audience size or room capacity;
+- whether live transcription, translation, polls, and post-event materials are enabled;
+- who can view the live session and any archived recording or transcript; and
+- the speaker and organizer responsible for session operations.
 
-During registration, attendees may share topics they want to learn about. Organizers can review aggregate interest summaries and share relevant themes with speakers. They can use expected session interest and registration numbers as inputs when assigning rooms or planning capacity.
+Changes to the schedule should be visible to affected speakers and attendees. The system should identify schedule conflicts, such as a speaker assigned to overlapping sessions or a room over capacity, when the required data is available.
 
-Do not treat interest counts as guaranteed attendance. Avoid exposing individual registration answers to speakers unless an attendee has explicitly agreed to share them.
+### Registration interests and audience planning
 
-### Floor map and exhibitor layout — later scope
+Organizers may collect an attendee's response to a question such as “What would you like to learn from this conference?” The organizer can review aggregate themes and counts, then share an approved summary with speakers. These responses can inform session descriptions, room assignments, and capacity planning.
 
-Organizers may place services, exhibitors, and activities on a conference map. Interest patterns could help organizers choose whether related exhibitors should be grouped together or distributed to encourage discovery. This depends on having exhibitor and venue-map data and is not required for the first working version.
+Interest is not a reliable attendance forecast by itself. Organizers should be able to distinguish sign-ups, stated interests, and actual attendance. Individual registration responses and contact details should not be shared with speakers by default.
+
+### Venue and exhibitor planning — candidate follow-up
+
+Organizers may create a floor map containing rooms, services, exhibitors, and activities. They could use topic-interest patterns to choose whether related exhibitors should be grouped or distributed to encourage discovery. This requires venue-map and exhibitor data and is not a prerequisite for the initial release.
 
 ## During the conference
 
-### Live session operations
+### Session operations dashboard
 
-Organizers can see which sessions are configured for transcription or translation and whether those services are healthy. For each session, the operations view should show:
+Organizers need a desktop-oriented view of active and upcoming sessions. It should show:
 
-- transcription and translation service status;
-- active session connections or streams;
-- processing latency, including speech-to-transcript and translation delay;
-- errors, retries, and queue or backlog indicators; and
-- a clear warning when service quality is degraded.
+- session, room or remote link, scheduled time, speaker, and current state;
+- whether transcription and each configured translation are enabled and healthy;
+- live connection or stream count, where available;
+- transcription delay and translation delay, including a recent trend or high-percentile view;
+- queue depth or backlog age, when the processing architecture uses a queue;
+- error, timeout, retry, and service-unavailable indicators; and
+- a clear alert when a session is degraded and a suggested next action or support contact.
 
-Organizers need a way to identify the affected session and communicate an outage or fallback plan. The attendee and speaker experiences should show a simpler service status, without exposing internal infrastructure details.
+The dashboard should help an organizer answer “Which sessions need attention now?” and “Is the issue limited to one session or affecting the whole event?” It should separate user-visible service status from infrastructure detail. Organizers can notify affected speakers or attendees about an outage and share a fallback plan.
 
 ### Audience participation
 
-Organizers can enable speaker-created polls or surveys for a session and view aggregate responses. Polls should be optional for attendees and should not interrupt access to the talk. Whether results are anonymous, visible live, or retained after the event is an event-level policy decision.
+Organizers can enable a speaker's poll or survey for a session, choose whether results appear live, and view aggregate responses. Polls must not be required to access the session. The event policy should define whether polls are anonymous, whether individual answers are retained, and who can export results.
 
-### In-person and remote attendee support — later scope
+### In-person attendee support — candidate follow-up
 
-The platform may provide venue maps, live transcripts and translations on attendees' devices, and remote viewing or group discussion. Remote watch parties and chat introduce moderation, video delivery, and capacity requirements; treat them as separate features that need validation before including them in the initial scope.
+The organizer experience may provide a venue map and service locations. Organizers should be able to publish updates when rooms, times, or services change. Attendees use their own device for the live transcript, translation, schedule, and participation views; see the [attendee specifications](ATTENDEE_SPECS.md).
+
+### Remote attendance — candidate follow-up
+
+Remote attendance may include a live stream, watch parties, and moderated chat. These features require video delivery, moderation tools, and additional capacity planning. They should be scoped separately from live transcription and translation.
 
 ## After the conference
 
-### Session insights
+### Session and event insights
 
-Organizers can review aggregate engagement and feedback by session. Potential signals include attendance or participation counts, poll responses, attendee ratings, and searches for topics within published transcripts. These are indicators of engagement, not a definitive score of a talk's quality, learning, or retention.
+Organizers can review aggregate event and session information such as registration, attendance or participation counts, poll responses, optional ratings, and searches within published transcripts. If search analytics are offered, show aggregate topics and counts rather than a named attendee's search history. Suppress or combine low-volume results when individuals could otherwise be inferred.
 
-If transcript searches are included, report aggregate query themes and counts. Do not show organizers a named attendee's searches by default. Explain how low-volume results are handled so individuals cannot be inferred from small groups.
+These signals describe engagement; they do not, by themselves, measure learning, knowledge retention, or presentation quality. The product should avoid reducing a session to a single “success” score unless the team defines and validates what that score means.
 
-### Speaker follow-up and feedback
+### Speaker feedback and follow-up
 
-Organizers can collect attendee feedback for speakers and organizer feedback from speakers. Speakers may share follow-up links or resources with attendees who opt in. Email or text campaigns should require explicit recipient consent and comply with event communication preferences.
+Organizers can collect attendee feedback for speakers and feedback from speakers about the event. Speakers may submit links and resources for attendees. If organizers send follow-up email or text messages, recipients must have opted in and organizers must follow the event's communication preferences.
 
-### Session archive and personalized follow-up — later scope
+### Session archive and personalized digest — candidate follow-up
 
-With speaker and attendee permissions, the platform may publish session transcripts, summaries, or RSS feeds. A future personalized digest could point attendees to sessions or transcript passages related to their stated interests. Recording, publication, retention, and deletion rules must be decided before this feature is built.
+With the required permissions, organizers may publish transcripts, summaries, recordings, or RSS feeds. A future personalized digest could connect an attendee's stated interests with relevant sessions and timestamped transcript passages. Recording, review, access, retention, and deletion rules must be established before this feature is released.
 
-## Dash0: resource use and service capacity
+## Dash0: resource use and capacity
 
-Dash0 is the observability tool for the platform's engineering or operations team. It can collect and display telemetry such as metrics, traces, logs, and infrastructure resources. It should help the team understand whether transcription, translation, or API services are approaching capacity and where delays originate. [Dash0 dashboards](https://www.dash0.com/docs/dash0/dashboards/about-dashboards) can combine these signals; Kubernetes resource metrics are available when the services run on Kubernetes ([metric reference](https://www.dash0.com/docs/dash0/monitoring/kubernetes/kubernetes-metrics)).
+Dash0 is the observability platform for authorized technical operators. It can bring metrics, traces, logs, and resource information together in dashboards. Its Kubernetes resource metrics apply when the services run on Kubernetes; other hosting environments need their own supported resource instrumentation. See [Dash0 dashboards](https://www.dash0.com/docs/dash0/dashboards/about-dashboards) and the [Kubernetes metrics reference](https://www.dash0.com/docs/dash0/monitoring/kubernetes/kubernetes-metrics).
 
-### Signals to monitor
+### Signals for operators
 
-- CPU, memory, and GPU use where applicable, by service and deployment;
-- active streams, request volume, queue depth, and oldest queued-job age;
-- speech-to-text and translation latency, including median and high-percentile delay;
-- error, timeout, and retry rates; and
-- capacity headroom and periods of sustained saturation.
+Monitor the following, separated by service and deployment where useful:
 
-These signals help operators diagnose bottlenecks and decide whether to shift, queue, or scale work. Dash0 observes and alerts on the system; it does not itself balance workloads or guarantee autoscaling. Load balancing or autoscaling behavior must be implemented in the application and hosting infrastructure.
+- CPU, memory, and GPU utilization, if GPU processing is used;
+- number of active sessions, streams, connections, and concurrent jobs;
+- request rate, queue depth, and oldest queued-job age;
+- speech-to-text and translation latency, including typical and high-percentile delay;
+- error, timeout, retry, and dropped-connection rates; and
+- available capacity and duration of sustained saturation.
 
-### Organizer-facing capacity view
+These signals help operators locate bottlenecks and choose whether to queue work, reduce processing load, move workloads, or scale infrastructure. Dash0 provides observability and alerting; workload balancing and autoscaling must be implemented separately in the application and hosting platform.
 
-Organizers need actionable, event-level guidance such as “translation is delayed for two sessions” or “current capacity is nearing its limit,” rather than raw CPU charts. The product may present a curated status and capacity view based on operational telemetry. Direct access to the Dash0 account should be limited to authorized technical operators unless role permissions and the data shown are deliberately designed for organizers.
+### Organizer-facing capacity guidance
 
-Telemetry must not contain raw audio, transcript text, attendee names, registration answers, or search terms. Use service and event dimensions only where their cardinality and privacy impact are understood; keep attendee-level identifiers out of operational metrics.
+Organizers should receive concise, event-specific status in the conference product, for example, “translation is delayed for two sessions” or “service capacity is nearing its limit.” Raw CPU charts and unrelated service details belong in the technical operations view. Direct access to the Dash0 account is not assumed; provide it only if organizer roles, permissions, and the displayed data are deliberately designed for that access.
 
-## Suggested initial scope
+Do not send raw audio, transcript text, attendee names, registration answers, or identifiable search terms to Dash0. Use only the minimum operational attributes needed to find a problem. Avoid attendee-level identifiers in telemetry and review the privacy and cardinality impact of event or session dimensions.
 
-1. Create an event, a session, and a speaker.
-2. Collect attendee learning interests and show organizers aggregate themes.
-3. Let an organizer enable transcription and translation for a session.
-4. Show session service status and basic latency/error information.
-5. Collect optional session feedback and show aggregate results.
+## Initial release candidate
 
-Room recommendations, floor-plan optimization, remote watch parties, newsletters, personalized RSS, and transcript search analytics are candidate follow-up features, not assumptions for the first release.
+The following is a proposed first organizer workflow, not a final commitment:
 
-## Questions to resolve with the project team
+1. Create an event, add a session and speaker, and configure session languages.
+2. Collect attendee learning interests and review an aggregate summary.
+3. Enable live transcription and translation for a session.
+4. Monitor service readiness, delay, and errors for the active session.
+5. Review optional post-session feedback in aggregate.
 
-- Who is the operational user for Dash0: the organizer, a technical operator, or both?
-- Which hosting environment will run the app, and can Dash0 receive host/container or Kubernetes resource metrics there?
-- What workload action should follow a capacity warning: queue work, reduce quality, move sessions, or scale services?
-- What does “session success” mean, and which signals can support that conclusion without implying learning or retention we have not measured?
-- What permissions govern recording, transcript access, publication, retention, and deletion?
+Floor-plan optimization, remote watch parties, newsletters, personalized RSS, advanced search analytics, predictive room assignment, and automated scaling are follow-up candidates.
+
+## Decisions to resolve
+
+- Who operates the platform during an event: an organizer, a separate technical operator, or both?
+- Which hosting environment will be used, and what resource telemetry can it provide to Dash0?
+- What actions should follow a capacity warning: queue, reduce quality, move a session, or scale?
+- Which metrics are visible to organizers, speakers, and attendees, respectively?
+- What consent and access rules govern registration answers, polls, feedback, recordings, and transcripts?
+- How should “session success” be defined without overstating what engagement data proves?

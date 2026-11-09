@@ -1,53 +1,78 @@
-# SPEAKER SPECS
-
-## Pre-Conference
-We want to help the speakers be able to know what their audicence would to hear before they even meet them. They can do this by seeing a collection of summari
 # Speaker specifications
 
-## Role and goals
+## Purpose
 
-Speakers prepare and deliver sessions. They want to understand the audience, present reliably, and know whether the session was useful. They should control the session materials and recording options attributed to them.
+Speakers prepare and deliver conference sessions. The platform should help them understand audience interests, manage session information, deliver an accessible talk, and learn from attendee feedback without exposing attendee data unnecessarily.
+
+## Speaker goals
+
+- Understand the audience's learning interests before the event.
+- Keep session details, links, and materials accurate.
+- Know whether live session services are ready and what to do if they fail.
+- Engage attendees through optional polls or questions.
+- Review feedback and share follow-up material with interested attendees.
 
 ## Before the conference
 
-### Understand audience interests
+### Review audience interests
 
-Speakers can review an organizer-approved summary of the topics attendees said they want to learn. The summary should be aggregated and should not reveal individual registration answers by default. Speakers can use it to adjust examples, emphasis, and session descriptions; it is guidance, not a promise that every attendee has the same interests.
+For each assigned session, a speaker can review an organizer-approved summary of what attendees said they want to learn. The summary may include aggregated topics and response counts, but should not include attendee names or individual registration responses by default. Speakers can use it to adjust examples, emphasis, and session descriptions; it is guidance, not a guarantee of the audience's knowledge or attendance.
 
-### Prepare the session
+### Manage session details
 
-Speakers can review their session details, share links or resources, and confirm whether live transcription or translation is enabled. They need to know what will be recorded, who can view the resulting content, and how long it will be retained.
+Speakers can review the session title, abstract, topic tags, track, room, date and time, and any organizer-provided audience summary. The project team must decide which fields speakers may edit and which require organizer approval. Speakers can submit presentation links, handouts, and follow-up resources for organizer review or publication.
+
+### Review recording and accessibility settings
+
+Before the event, speakers can see whether transcription, translation, or recording is enabled for their session, which languages are configured, who can access resulting content, and the planned retention period. The system should make recording and publication expectations clear before the speaker presents.
 
 ## During the conference
 
-### Deliver and monitor the session
+### Session readiness and service status
 
-Speakers can see a simple readiness/status indicator for enabled session services. If transcription or translation is delayed or unavailable, the status should explain the issue in plain language and provide a fallback contact or action. Speakers should not need to interpret infrastructure metrics or use the Dash0 console.
+Speakers can see a simple status for the services configured for their active session:
+
+- transcription and translation are ready, processing, delayed, or unavailable;
+- the selected translation languages; and
+- a plain-language fallback action or support contact if a service is degraded.
+
+The speaker view should not require the speaker to interpret CPU charts, infrastructure logs, or unrelated sessions' status. If service quality changes during a talk, the interface should update clearly and avoid claiming that captions or translations are complete or error-free.
 
 ### Polls and audience questions — candidate feature
 
-If enabled by the organizer, speakers may launch a poll or survey during a session and view its results. Poll participation should be optional. Whether a speaker can view individual responses, show live results, or export results needs an explicit privacy decision.
+If the organizer enables participation tools, a speaker may launch a poll or question for attendees to answer on their devices. Candidate formats include multiple choice and true/false. Speakers may see aggregated responses and, if enabled, share the results on a room display. Poll participation should be optional and should not block access to the session.
+
+The event must define whether responses are anonymous, whether the speaker can see individual answers, whether results appear live, and how long responses are retained. Live questions or chat need moderation and should be scoped separately if they are not part of the initial release.
 
 ## After the conference
 
-### Feedback and follow-up
+### Review feedback
 
-Speakers can review aggregate attendee feedback for their own sessions and submit feedback about the conference experience. They can share follow-up links or resources with attendees who choose to receive them. The platform should not give speakers attendee contact details without consent.
+Speakers can review aggregate feedback for their own sessions and submit feedback about the event experience. Any feedback shown to a speaker should follow the event's stated anonymity and moderation rules. Small response groups may need suppression to prevent a person's identity from being inferred.
 
-### Session content
+### Share resources and session materials
 
-If the event's recording policy allows it, speakers may review or approve a transcript, summary, or other session materials before publication. Publication and retention permissions should be clear before the session begins.
+Speakers can submit links, slides, or other resources for attendees. If a transcript, summary, or recording is created, speakers should know whether they can review or correct it before publication. Access, approval, retention, and deletion behavior must follow the event's content policy.
 
 ## Dash0: session service health and resource use
 
-Dash0 is primarily for the platform's technical operators, who use it to diagnose service capacity and performance. It can help them relate session delays to CPU, memory, GPU (where available), active streams, queue depth, errors, and transcription or translation latency. [Dash0 dashboards](https://www.dash0.com/docs/dash0/dashboards/about-dashboards) can bring telemetry signals together; host or Kubernetes resource detail depends on how the platform is deployed.
+Dash0 is primarily an observability tool for authorized technical operators. It can help them diagnose service issues by relating session delay to resource use, active streams, queue depth, error rates, and transcription or translation latency. Dash0 dashboards can combine observability signals; available host or Kubernetes resource detail depends on the deployment. See [Dash0 dashboards](https://www.dash0.com/docs/dash0/dashboards/about-dashboards).
 
-Speakers receive only a simple, session-specific status and useful next step in the conference product. Do not expose other sessions' infrastructure data, raw attendee data, or Dash0 access to speakers by default. Dash0 can identify a bottleneck, but any decision to queue, move, or scale work must be handled by the platform's operations and infrastructure.
+Speakers see a simple, session-specific service status and next step in the conference product, not direct Dash0 access by default. Do not expose other sessions' infrastructure data or attendee-level data. Dash0 may reveal that a service is saturated; operators and the hosting system must decide whether to queue, move, or scale work.
 
-## Questions to resolve with the project team
+## Accessibility and privacy
 
-- Can speakers edit session details or only review organizer-entered information?
-- Must speakers explicitly opt in to recording, transcription, and transcript publication?
-- Can speakers correct transcripts, and who approves the final version?
-- Which feedback is visible to a speaker, and should it be anonymous or moderated?
-- What should the speaker experience show when live services are degraded?
+- Session status, polls, and materials should be usable on phones and assistive technologies.
+- Speakers should receive only attendee-interest information approved for their session.
+- Speaker access should be limited to sessions assigned to them.
+- Recording and transcript publication require clear event and speaker permissions.
+- Speaker follow-up should reach only attendees who opted in; speakers should not receive attendee contact details by default.
+
+## Decisions to resolve
+
+- Which session fields can speakers edit directly?
+- Is speaker approval required before a transcript or recording is published?
+- Can speakers correct automated transcripts, and who approves the corrected version?
+- Which poll types are in the initial release, and what response details may the speaker see?
+- What feedback is visible to speakers, and how are anonymous or low-volume responses protected?
+- What exact fallback should the interface offer when transcription or translation is degraded?
