@@ -61,7 +61,7 @@ The first start downloads container images and Whisper/translation language mode
 
 The frontend proxies `/api/` requests to FastAPI. The API health endpoint is `/api/health`; it checks PostgreSQL and reports the configured internal URLs for WhisperLive and LibreTranslate. Containers reach one another by Compose service name, so the backend uses `postgres`, `whisperlive`, and `libretranslate` as hostnames.
 
-WhisperLive uses its upstream CPU image, which does not require a GPU. Its current published image targets Linux AMD64; on Apple Silicon, Docker may run it under emulation and transcription will be slower. The service downloads the model on first use. See [WhisperLive's Docker instructions](https://github.com/collabora/WhisperLive#whisper-live-server-in-docker) and [LibreTranslate's installation guide](https://docs.libretranslate.com/guides/installation/).
+WhisperLive uses its upstream CPU image, which does not require a GPU. The image is published for Linux AMD64, so Compose explicitly selects that platform; on Apple Silicon, Docker Desktop runs it under emulation and transcription will be slower. The service downloads the model on first use. See [WhisperLive's Docker instructions](https://github.com/collabora/WhisperLive#whisper-live-server-in-docker) and [LibreTranslate's installation guide](https://docs.libretranslate.com/guides/installation/).
 
 ### Project integrations
 

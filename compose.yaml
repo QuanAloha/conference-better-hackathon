@@ -45,8 +45,9 @@ services:
     restart: unless-stopped
 
   whisperlive:
-    # CPU image works without NVIDIA Container Toolkit; first use downloads a model.
+    # Upstream publishes this CPU image for AMD64; Docker Desktop emulates it on ARM Macs.
     image: ghcr.io/collabora/whisperlive-cpu:latest
+    platform: linux/amd64
     ports:
       - "${WHISPERLIVE_PORT:-9090}:9090"
     volumes:
