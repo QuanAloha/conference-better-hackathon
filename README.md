@@ -45,7 +45,7 @@ The starter stack contains five services:
 | FastAPI backend | API and service configuration | [http://localhost:8000/docs](http://localhost:8000/docs) |
 | PostgreSQL | Persistent relational data | `localhost:5432` |
 | WhisperLive | CPU-based live speech transcription | `localhost:9090` |
-| LibreTranslate | Self-hosted translation API | [http://localhost:5000](http://localhost:5000) |
+| LibreTranslate | Self-hosted translation API | [http://localhost:5001](http://localhost:5001) |
 
 ### Start the stack
 
