@@ -1,26 +1,42 @@
-//Project Details
+# Conference Companion project notes
 
-Organizers - 
-They need a desktop view for them to see 1. Monitor what talks are being tranlsated / transcribed. Include on their dashboard how long it takes for a sentence to be tranlasted (Use Dash0). Check how long it takes a sentence from being said by the speaker and to be digitally translated / transcribed. 2. Post conference - search through the talks and look how many times a certain keyword or key sentence was searched for. Also if the talk fufilled the needs of the audience. IE if everyone is searching for dockers and then there is only.
+Conference Companion is a conference-management platform concept focused on helping attendees follow sessions and helping organizers understand event operations and outcomes.
 
-They will set up the software which will then send out the live translation / transcript to the audience who can see it on their own devices.  
+## User specifications
 
-Give them a numerical summary of how "popular" their talk was or how much retention your conference had.
-Lets you see in a numerical way how "successful your talk was"
+- [Organizer specifications](ORGANIZER_SPECS.md): event setup, session operations, post-event insights, and capacity monitoring.
+- [Speaker specifications](SPEAKER_SPECS.md): audience context, session delivery, service status, and follow-up.
+- [Attendee specifications](ATTENDEE_SPECS.md): session discovery, live access, participation, and post-event use.
 
-Audience -
-View of live transcriptions / Translations of talks they are interested in as
+These documents describe candidate behavior and open questions. They are not yet a committed implementation scope. Features marked as later scope or candidate features need prioritization before development.
 
+## Product direction to validate
 
-Scope Creak...
-Provide integration into outside note collection apps (Notion, Obsidian, etc...)
-RSS Feeds in addition to note collection apps. (Personal Newspaper delivery from all conference talks that you have or wanted to attend.)
+The current leading direction is to make sessions easier to follow and revisit through live transcription and translation, then use attendee preferences and optional feedback to make the experience more relevant. The first release should validate a small end-to-end session workflow before adding conference-wide analytics, remote events, or personalized content feeds.
 
+## Dash0 and operational capacity
 
+Dash0 is intended for observability of the platform's own services. Technical operators can use it to see resource pressure and service behavior during an event. Organizers should receive a concise capacity/readiness view in the conference product when that helps them make event decisions; they do not automatically need direct access to Dash0.
 
-Speakers - 
-They look at the sign up forms and take note of "What do you want to see at the conference?" We will need AI to create a "demo" sign-up form that mimics Luma's sign-up form. The speakers can pull a summary of what the audience would like to see and then can tailor their talks to what the audience wants to see.
+Candidate measurements include CPU and memory (plus GPU where available), active streams, request rates, queue depth, transcription/translation latency, errors, and capacity headroom. These measurements can point to a bottleneck, but load balancing or scaling requires separate application and hosting behavior.
 
+Keep personal and session content out of telemetry: do not send attendee names, registration responses, raw audio, transcript text, or identifiable searches. Decide what event-level aggregation is safe before using it in dashboards.
 
-Scope Creak...
-If mid conference there is something a person wants to learn they can 
+Dash0 references: [dashboards](https://www.dash0.com/docs/dash0/dashboards/about-dashboards), [metrics](https://www.dash0.com/docs/dash0/telemetry/metrics/about-metrics), and [Kubernetes metrics](https://www.dash0.com/docs/dash0/monitoring/kubernetes/kubernetes-metrics) when running on Kubernetes.
+
+## Decisions needed before implementation scope is finalized
+
+1. Which user journey must work in the hackathon prototype?
+2. Is the first transcript generated live, from an uploaded recording, or both?
+3. Which languages and number of concurrent sessions should the prototype support?
+4. Who is the technical operator during an event, and which operational decisions should organizers be able to make?
+5. What consent, publication, retention, and deletion rules apply to audio and transcripts?
+6. Which post-event outcomes can be measured responsibly? Searches, attendance, and survey responses are engagement signals; they do not by themselves prove learning or retention.
+
+## Candidate later features
+
+- Floor maps and exhibitor placement informed by attendee interests.
+- Remote watch parties, group chat, and richer streaming.
+- Transcript search, session Q&A, personalized RSS/newsletter digests, and note-app exports.
+- Speaker resources, attendee feedback, and opt-in speaker follow-up.
+- Predictive room assignment and capacity planning.
