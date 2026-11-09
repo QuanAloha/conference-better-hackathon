@@ -85,10 +85,18 @@ Attendees should see only useful service status in the conference app, such as â
 ## Decisions to resolve
 
 - Which registration fields are required, and who can see each one?
+    > Name, Email, (Optional) Phone #, Open Answer General Interests (to be turned into transcription searches), also speaker interests. Speakers can see the aggregate answers from perticipant interests. Organizers can have access to anonymized agregate everything else. Particiapants can see the name and email that they have submitted and also can also see what specific inofmraiton they submitted that the organizers and speakers can see. 
 - Can attendees edit or delete their learning-interest response?
+    > Attenees can append their learning interests thorughout the conference, but not delete. At the end of the confrence, it will all be deleted anyways. 
 - Which languages are supported at launch, and how does an attendee select one?
+    > Fot the simplicity of this project lets just go with english, spanish, tagalog.
 - Are transcripts saved on-device, in an account, or both? For how long?
+    > Transcripts can be accessed by the accounts of all the attendees, speakers, and organizers. They will have access to the infomration through any of the communcation channels they chose rpeconference liek email, text, or rss. 
 - Which sessions can attendees search, and is search local or server-side?
+    > Server side. THis is a web app anyways. THey can search for other things via their email. 
 - Are attendee poll answers anonymous, and who can see individual responses?
+    > Poll anwers are all anonymous. 
 - What minimum service experience should remain available on poor Wi-Fi or a low-end phone?
+    > All text based information should be priority. then live captions can be available for streaming to devices.  images or other highbandwith media can follow last. 
 - Which, if any, remote-attendance features belong in the first release?
+    > On first release, lets have the a page skeleton like a youube video page with the video being the main event on the page. On the righ tof the video, insted of recommended next videos we will have th elive transcript with the option of live translation. Beneath the vide just make it a simple event title with a "back" button to go back to the events page. 

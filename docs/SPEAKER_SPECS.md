@@ -71,8 +71,14 @@ Speakers see a simple, session-specific service status and next step in the conf
 ## Decisions to resolve
 
 - Which session fields can speakers edit directly?
+    >   All of them
 - Is speaker approval required before a transcript or recording is published?
+    > Speakers will be able to opt out of having their talk published. By default it will be published. 
 - Can speakers correct automated transcripts, and who approves the corrected version?
+    > Yes.....but it must be reviewed by an AI agent. And it also must be transparent to the readers where the speaker opted to make edits. 
 - Which poll types are in the initial release, and what response details may the speaker see?
+    > No open answer polls. Only true false or multiple choice answers. 
 - What feedback is visible to speakers, and how are anonymous or low-volume responses protected?
+    > If the responses are all multiple choices, the speaker cannot see who chose what choice, and the system wont even track that. It will track the number of people who chose a choce bu tnot the indiividual peple. 
 - What exact fallback should the interface offer when transcription or translation is degraded?
+    > Bar none - the recording of a talk needs to be kept. If a transcripton or translation is degraded, useres of the app will be informated about what is going on. They will also be told that the recording of the talk will be run through better models after the talk concludes and the transcription/translation will be available within 30 mintues of talk completion. 
