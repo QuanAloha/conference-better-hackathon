@@ -1,70 +1,86 @@
 # Conference Companion
 
-An early-stage hackathon project exploring tools that make conferences easier to attend and run.
+Conference Companion is a hackathon prototype for making recorded talks easier to follow, search, and revisit. Its first workflow centers on a session viewer with live captions, multilingual transcripts, a searchable transcript, optional AI-assisted Q&A, speaker tools, and an organizer operations view.
 
-## Project direction
+The prototype helps validate the AI transcription direction. It does not yet establish whether attendees prefer transcripts, summaries, or question answering; that needs feedback from a real event.
 
-### AI workshop transcription agent — leading idea
+## What the prototype includes
 
-Help attendees get more value from workshops by turning a session recording into a searchable, useful summary. Before the event, an attendee could choose what they want to learn. After a session, the agent could provide a transcript, a concise summary, key takeaways, and answers grounded in that session.
+- **Attendee view:** select a session, follow live WhisperLive captions from the recording, choose English, Spanish, or Tagalog, search timestamped transcript segments, view an active poll, submit optional topic interests, and rate a session anonymously.
+- **Speaker view:** edit session details and publication status, upload a recording, start enhanced post-session processing, create multiple-choice or true/false polls, see aggregate poll results, and suggest transcript corrections for AI review.
+- **Organizer view:** see active viewers, processing queue and job status, aggregate topic interests and session matches, anonymous feedback totals, and service health. An advanced mode adds backend CPU and memory readings.
+- **Processing pipeline:** PostgreSQL-backed jobs are prioritized by observed session audience and processed by a separate worker. The worker extracts audio with FFmpeg, requests enhanced transcription from WhisperLive, translates available segments with LibreTranslate, and indexes them in Elasticsearch. Search falls back to PostgreSQL if Elasticsearch is unavailable.
+- **Optional AI:** an OpenAI API key enables grounded session Q&A, transcript correction review, and aggregate interest summaries. It is not required to run the stack.
 
-Organizers could review aggregated, opt-in feedback to see which topics resonated and where attendees still had questions. This creates a possible organizer product alongside the attendee experience.
-
-**Why explore this first:** it has a clear attendee benefit and a focused first version: upload or record one session, transcribe it, and produce a session summary. Personalization and organizer analytics can follow if that proves useful.
-
-**Questions to validate:**
-
-- Will attendees use a transcript, a summary, or ask questions about the session?
-- Can we get permission to record and process workshop audio?
-- How should speakers and attendees control access, retention, and deletion?
-- Would organizers pay for attendee insights, and what feedback is useful without identifying individuals?
-
-### Other concepts
-
-| Idea | Who it helps | Core value | Main question |
-| --- | --- | --- | --- |
-| Dock scheduler | Event logistics teams and delivery drivers | Coordinate loading-dock arrival and departure times; help drivers use wait time productively | Is dock congestion frequent and costly enough to justify a dedicated tool? |
-| Conference hallway sharing | Attendees | Share GitHub profiles, projects, LinkedIn pages, and portfolios with nearby people | What makes this more useful than exchanging a QR code or using existing event apps? |
-
-## Suggested first prototype
-
-1. Pick one workshop and obtain consent to use its audio.
-2. Generate a transcript and a short, structured summary with key takeaways.
-3. Let a participant ask questions answered from that session, with references to transcript timestamps.
-4. Ask participants for optional feedback about what they hoped to learn and whether the session met that goal.
-
-Keep the initial prototype small. Validate the attendee workflow before building organizer dashboards or conference-wide analytics.
-
-## Local development with Docker Compose
-
-The starter stack contains five services:
+## Architecture
 
 | Service | Purpose | Local address |
 | --- | --- | --- |
-| React frontend (served by Nginx) | Conference Companion interface | [http://localhost:3000](http://localhost:3000) |
-| FastAPI backend | API and service configuration | [http://localhost:8000/docs](http://localhost:8000/docs) |
-| PostgreSQL | Persistent relational data | `localhost:5432` |
-| WhisperLive | CPU-based live speech transcription | `localhost:9090` |
-| LibreTranslate | Self-hosted translation API | [http://localhost:5001](http://localhost:5001) |
+| React + Nginx | Web interface and API/WebSocket proxy | [http://localhost:3000](http://localhost:3000) |
+| FastAPI | Application API, session state, and operational metrics | [http://localhost:8000/docs](http://localhost:8000/docs) |
+| PostgreSQL | Sessions, transcript, anonymous aggregates, and durable jobs | `localhost:5432` |
+| Processing worker | Enhanced transcription, translation, and indexing | Internal Compose service |
+| WhisperLive | Live and enhanced speech transcription | `localhost:9090` (WebSocket) |
+| LibreTranslate | Transcript translation | [http://localhost:5001](http://localhost:5001) |
+| Elasticsearch | Transcript search index | `localhost:9200` |
 
-### Start the stack
+## Run locally
 
 1. Install Docker Desktop or Docker Engine with the Compose plugin.
-2. Optionally copy `.env.example` to `.env` and change the local ports or database password.
-3. From the project root, run:
+2. Copy `.env.example` to `.env` if you want to set an OpenAI key, Dash0 endpoint, or custom ports. The defaults work without third-party credentials.
+3. From the repository root, start the stack:
 
    ```sh
    docker compose up --build
    ```
 
-The first start downloads container images and Whisper/translation language models, so it can take a while. Model files and database data persist in Docker volumes. Stop the stack with `Ctrl+C`, or run `docker compose down`. To also remove persisted database and model data, run `docker compose down --volumes`.
+4. Open [http://localhost:3000](http://localhost:3000). The database is seeded with a demo event and two sample sessions. Use the view switcher to explore attendee, speaker, and organizer workflows.
+5. In the Speaker view, upload a consented recording to try live captions and the enhanced post-session queue. Use a short recording for the first run.
 
-The frontend proxies `/api/` requests to FastAPI. The API health endpoint is `/api/health`; it checks PostgreSQL and reports the configured internal URLs for WhisperLive and LibreTranslate. Containers reach one another by Compose service name, so the backend uses `postgres`, `whisperlive`, and `libretranslate` as hostnames.
+The first start downloads several images and language models. WhisperLive's upstream CPU image is AMD64-only; Compose selects `linux/amd64`, so it runs under emulation on Apple Silicon and transcription may be slow. LibreTranslate also downloads its language models. Database, search index, model cache, and recordings persist in Docker volumes.
 
-WhisperLive uses its upstream CPU image, which does not require a GPU. The image is published for Linux AMD64, so Compose explicitly selects that platform; on Apple Silicon, Docker Desktop runs it under emulation and transcription will be slower. The service downloads the model on first use. See [WhisperLive's Docker instructions](https://github.com/collabora/WhisperLive#whisper-live-server-in-docker) and [LibreTranslate's installation guide](https://docs.libretranslate.com/guides/installation/).
+Stop with `Ctrl+C` or `docker compose down`. To remove all local data and uploaded recordings as well, run `docker compose down --volumes`.
 
-### Project integrations
+Useful endpoints:
 
-Dash0 and Gitar are not in the five-container application stack. Dash0 can receive OpenTelemetry data from the backend once observability credentials and the desired dataset are configured; keep its token in environment secrets and avoid sending audio or transcript content as telemetry. See [Dash0's Python getting-started guide](https://www.dash0.com/docs/dash0/opentelemetry/distributions/python/getting-started).
+- Health check: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+- OpenAPI explorer: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-Gitar connects to the GitHub repository through its GitHub App to review pull requests and can validate requested fixes against CI. A repository administrator must authorize that app in GitHub. See [Gitar's setup guide](https://www.sonarsource.com/developers/blueprints/get-started-with-gitar/).
+If a host port is already in use, change its corresponding value in `.env` (for example `LIBRETRANSLATE_PORT=5002`) and restart Compose. Containers call each other by service name, so internal URLs such as `http://libretranslate:5000` should not be changed to host-mapped ports.
+
+## Dash0 observability
+
+The API and worker use OpenTelemetry. The backend emits request instrumentation and gauges for active viewers, queued work, process CPU, and process memory. The worker emits spans for enhanced recording processing. Audio, transcript text, interest text, and attendee contact details are not added to telemetry attributes.
+
+To export telemetry, copy `.env.example` to `.env` and fill in the OTLP endpoint and headers supplied by your Dash0 account. Then set the applicable exporters to `otlp`, for example:
+
+```dotenv
+OTEL_EXPORTER_OTLP_ENDPOINT=https://YOUR_DASH0_OTLP_ENDPOINT
+OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer%20YOUR_TOKEN
+OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+OTEL_TRACES_EXPORTER=otlp
+OTEL_METRICS_EXPORTER=otlp
+OTEL_LOGS_EXPORTER=none
+```
+
+Dash0 account endpoints and authentication header formats vary. Use the values from the Radar/Dash0 representative or your Dash0 account, keep credentials in `.env`, and never commit them. Restart the stack after editing environment values. The organizer view shows application-level readings locally; Dash0 is the place to explore exported time-series and traces. This prototype does not yet include a tailored Dash0 dashboard or alert policies.
+
+## Optional OpenAI features
+
+Set `OPENAI_API_KEY` in `.env` to enable AI Q&A grounded in stored transcript segments, aggregate interest summaries, and speaker transcript-edit review. The backend sends only the relevant transcript or aggregate context needed for each request. AI output is advisory and should be reviewed before publishing a transcript correction. Without a key, the rest of the application still runs.
+
+## Gitar and repository workflow
+
+Gitar is a repository/PR workflow tool, not an application container. The project includes a GitHub Actions workflow that builds the frontend, compiles the Python backend, and validates Compose configuration. Connect Gitar to the GitHub repository using the GitHub App and let it review pull requests against this CI workflow. A repository administrator needs to authorize the app. See [Gitar's setup guide](https://www.sonarsource.com/developers/blueprints/get-started-with-gitar/).
+
+## Kubernetes and Radar
+
+`k8s/base` contains a starter Kustomize deployment for a Radar-provided Kubernetes namespace or another cluster. Read [the Kubernetes deployment guide](k8s/README.md) before applying it. The Radar representative needs to provide the cluster context/namespace, image registry, ingress requirements, storage class, and telemetry configuration. The manifests are not deployable to Radar until those environment-specific values are supplied and the images are pushed to an accessible registry.
+
+## Prototype boundaries and next decisions
+
+This is a workflow prototype, not a production conference platform. Role switching is a demo convenience; there is no authentication or role-based authorization. Email, SMS, RSS delivery, attendee accounts, and automatic post-conference contact deletion are not implemented. Interest and feedback endpoints store aggregate counts rather than individual answers. Session data and uploaded media currently have no automatic retention policy. The sample event and operational interfaces are meant for local evaluation.
+
+Before a real event, define speaker recording consent, attendee access controls, retention/deletion rules, contact-delivery providers, production database backups, media storage, TLS, and who may see operational metrics. Validate translation quality and processing times on representative recordings. The local CPU WhisperLive service may not meet live-conference latency or concurrency needs; measure it with Dash0 and the organizer queue before deciding how to scale or whether to use accelerator-backed processing.
+
+For component details, see [project documentation](docs/DOCUMENTATION.md) and the [attendee](docs/ATTENDEE_SPECS.md), [speaker](docs/SPEAKER_SPECS.md), [organizer](docs/ORGANIZER_SPECS.md), and [hackathon technology plan](docs/HACKATHON_TECHNOLOGY_PLAN.md).
